@@ -1,77 +1,32 @@
 const core = require('@actions/core');
 const github = require('@actions/github');
 
-function sha(context) {
+function branchName(context) {
   if (context.payload && context.payload.pull_request) {
-    return context.payload.pull_request.head.sha;
-  } else {
-    return context.sha;
+    return context.payload.pull_request.head.ref
   }
+
+  return github.context.ref.replace(/refs\/heads\/(.*)/, '$1');
 }
 
-function metaLabels(context) {
-  return [
-    `org.opencontainers.image.created=${(new Date()).toISOString()}`,
-    `org.opencontainers.image.description=${context.payload.repository.description || ''}`,
-    `org.opencontainers.image.revision=${sha(context) || ''}`,
-    `org.opencontainers.image.source=${context.payload.repository.html_url || ''}`,
-    `org.opencontainers.image.title=${context.payload.repository.name || ''}`,
-    `org.opencontainers.image.url=${context.payload.repository.html_url || ''}`,
-  ];
-}
-
-function metaTags(repository, context, commit) {
-  var tags = [];
-
-  tags.push(`${repository}:${commit}`);
-
-  if (context.ref == `refs/heads/${context.payload.repository.default_branch}`) {
-    tags.push(`${repository}:latest`)
-    tags.push(`${repository}:release-${commit.substr(0, 7)}`)
-  } else {
-    tags.push(`${repository}:dev-${commit.substr(0, 7)}`)
+function deployName(name, environment, context) {
+  if (environment == "production" || environment == "staging") {
+    return `${name}-${environment}`.substr(0, 63)
   }
 
-  // Append PR number
-  if (context.payload && context.payload.pull_request) {
-    tags.push(`${repository}:pr-${context.payload.pull_request.number}`)
-  }
+  const ref = branchName(context);
 
-  return tags;
+  return `${name}-${ref}`.toLowerCase().replace(/[^a-z0-9-]/g, "").substr(0, 63)
 }
 
 try {
   // Fetch inputs
-  // const repository = core.getInput('repository');
+  const name = core.getInput('name');
+  const environment = core.getInput('environment');
 
-  // Initialize context
-  // const labels = metaLabels(github.context);
-  // const tags = metaTags(
-  //   repository,
-  //   github.context,
-  //   sha(github.context)
-  // );
-  //
-  // console.log(`Labels:\n  ${labels.join(`\n  `)}`);
-  // core.setOutput('labels', labels.join(`\n`));
-  //
-  // console.log(`Tags:\n  ${tags.join(`\n  `)}`);
-  // core.setOutput('tags', tags.join(`\n`));
-  //
-  // // Accessors
-  // console.log(`repositoryTag: ${tags[0]}`);
-  // core.setOutput('repositoryTag', tags[0]);
-  // console.log(`repository: ${repository}`);
-  // core.setOutput('repository', repository);
-  // console.log(`tag: ${sha(github.context)}`);
-  // core.setOutput('tag', sha(github.context));
-
-  console.log("github:");
-  console.log(JSON.stringify(github));
-
-  const ref = github.context.ref.replace(/refs\/heads\/(.*)/, '$1');
-  console.log(`ref: ${ref}`);
-
+  const deploy = deployName(name, environment, github.context)
+  console.log(`name: ${deploy}`);
+  core.setOutput('name', deploy);
 } catch (error) {
   core.setFailed(error.message);
 }

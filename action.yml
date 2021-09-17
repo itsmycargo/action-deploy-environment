@@ -6,45 +6,17 @@ branding:
   icon: layers
 
 inputs:
-  repository:
-    description: ECR Repository to use for Images
+  environment:
+    description: Environment Name for Deployment
     required: true
-  registry_password:
-    description: “Password for image registry”
-    required: true
-  aws-access-key-id:
-    description: AWS Access Key ID for login and pushing to ECR Repository
-    required: true
-  aws-secret-access-key:
-    description: AWS Access Key for login and pushing to ECR Repository
-    required: true
-  aws-region:
-    description: AWS Region for ECR Repository
+  name:
+    description: Project Name for Deployment
     required: true
 
 outputs:
-  namespace:
-    description: Published Docker Image with Tag
-  url:
-    description: Published Docker Image
-  branch:
-    description: Published Docker Tag
-  release:
-    description:
+  name:
+    description: Deploy name for branch/environment
 
 runs:
   using: node12
   main: index.js
-
-# runs:
-#   using: "composite"
-#   steps:
-#   - id: meta
-#     run: |
-#       echo "::set-output name=namespace::siren-$(echo ${GITHUB_HEAD_REF##*/} | tr -cd '[a-zA-Z0-9-]' | head -c63)"
-#       echo "::set-output name=url::siren-$(echo ${GITHUB_HEAD_REF##*/} | tr -cd '[a-zA-Z0-9-]' | head -c63).itsmycargo.dev"
-#       echo "::set-output name=branch::$(echo ${GITHUB_HEAD_REF##*/} | tr -cd '[a-zA-Z0-9-]' | head -c63)"
-#
-#       echo "::set-output name=namespace::siren-staging"
-#       echo "::set-output name=url::siren-staging.itsmycargo.tech"
-#       echo "::set-output name=branch::$(echo ${GITHUB_REF##*/} | tr -cd '[a-zA-Z0-9-]' | head -c63)"

@@ -69,11 +69,9 @@ try {
   console.log("github:");
   console.log(JSON.stringify(github));
 
-  console.log("github.context:");
-  console.log(JSON.stringify(github.context));
+  const ref = github.context.ref.replace(/refs\/heads\/(.*)/, '$1');
+  console.log(`ref: ${ref}`);
 
-  console.log("github.context.payload:");
-  console.log(JSON.stringify(github.context.payload));
 } catch (error) {
   core.setFailed(error.message);
 }

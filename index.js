@@ -23,10 +23,15 @@ try {
   // Fetch inputs
   const name = core.getInput('name');
   const environment = core.getInput('environment');
+  const domain = core.getInput('domain');
 
   const deploy = deployName(name, environment, github.context)
   console.log(`name: ${deploy}`);
   core.setOutput('name', deploy);
+
+  const url = `${deploy}.${domain}`
+  console.log(`url: ${url}`);
+  core.setOutput('url', url);
 } catch (error) {
   core.setFailed(error.message);
 }

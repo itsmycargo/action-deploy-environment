@@ -6,16 +6,21 @@ branding:
   icon: layers
 
 inputs:
+  name:
+    description: Project Name for Deployment
+    required: true
   environment:
     description: Environment Name for Deployment
     required: true
-  name:
-    description: Project Name for Deployment
+  domain:
+    description: Domain for deployment environment
     required: true
 
 outputs:
   name:
     description: Deploy name for branch/environment
+  url:
+    description: URL for deployment
 
 runs:
   using: node12

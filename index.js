@@ -2,9 +2,17 @@ const core = require('@actions/core');
 const github = require('@actions/github');
 
 function branchName(context) {
+  console.log('--------1');
+  console.log(context);
+  console.log('--------1');
+
   if (context.payload && context.payload.pull_request) {
     return context.payload.pull_request.head.ref
   }
+
+  console.log('--------2');
+  console.log(context);
+  console.log('--------2');
 
   return github.context.ref.replace(/refs\/heads\/(.*)/, '$1');
 }

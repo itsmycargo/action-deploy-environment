@@ -66,9 +66,14 @@ try {
   // console.log(`tag: ${sha(github.context)}`);
   // core.setOutput('tag', sha(github.context));
 
-  console.log(github);
-  console.log(github.context);
-  console.log(github.context.payload);
+  console.log("github:");
+  console.log(JSON.stringify(github));
+
+  console.log("github.context:");
+  console.log(JSON.stringify(github.context));
+
+  console.log("github.context.payload:");
+  console.log(JSON.stringify(github.context.payload));
 } catch (error) {
   core.setFailed(error.message);
 }

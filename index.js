@@ -2,17 +2,9 @@ const core = require('@actions/core');
 const github = require('@actions/github');
 
 function branchName(context) {
-  console.log('--------1');
-  console.log(context);
-  console.log('--------1');
-
   if (context.payload && context.payload.pull_request) {
     return context.payload.pull_request.head.ref
   }
-
-  console.log('--------2');
-  console.log(context);
-  console.log('--------2');
 
   return github.context.ref.replace(/refs\/heads\/(.*)/, '$1');
 }
@@ -32,6 +24,7 @@ try {
   const name = core.getInput('name');
   const environment = core.getInput('environment');
   const domain = core.getInput('domain');
+  const output = branchName(github.context).toLowerCase().replace(/[^a-z0-9-]/g, "").substr(0, 63)
 
   const deploy = deployName(name, environment, github.context)
   console.log(`name: ${deploy}`);
@@ -40,6 +33,8 @@ try {
   const url = `${deploy}.${domain}`
   console.log(`url: ${url}`);
   core.setOutput('url', url);
+  console.log(`output: ${output}`);
+  core.setOutput('branch', output);
 } catch (error) {
   core.setFailed(error.message);
 }

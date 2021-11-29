@@ -21,6 +21,8 @@ outputs:
     description: Deploy name for branch/environment
   url:
     description: URL for deployment
+  output:
+    description: Branch name for deployment, used in domain name.
 
 runs:
   using: node12

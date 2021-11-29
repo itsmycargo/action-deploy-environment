@@ -32,6 +32,11 @@ try {
   const url = `${deploy}.${domain}`
   console.log(`url: ${url}`);
   core.setOutput('url', url);
+
+  const output = branchName(github.context).toLowerCase().replace(/[^a-z0-9-]/g, "").substr(0, 63)
+  console.log(`output: ${output}`);
+  core.setOutput('branch', output);
+
 } catch (error) {
   core.setFailed(error.message);
 }

@@ -27,6 +27,7 @@ try {
   const output = branchName(github.context).toLowerCase().replace(/[^a-z0-9-]/g, "").substr(0, 63)
 
   const deploy = deployName(name, environment, github.context)
+  console.log(`name: ${deploy}`);
   core.setOutput('name', deploy);
 
   const url = `${deploy}.${domain}`
